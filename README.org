@@ -1,0 +1,46 @@
+* Bachelor Thesis
+This repo contains all relevant source files
+for my BSc. Physics thesis titled
+"Arctic Amplification and Feedback Separation in a Simple Global Climate Model",
+written from 2025-05-23 to 2025-08-23
+at the Technical University of Munich, Department of Physics.
+
+You can view the source code of the thesis in [[file:Thesis.typ][Thesis.typ]].
+It is written in [[https://typst.app][Typst]], a modern typesetting system inspired by LaTeX.
+
+As part of this thesis, I worked with the
+[[https://mscm.dkrz.de/overview_i18n.html][Monash Simple Climate Model]] (MSCM),
+whose source code is available on [[https://bitbucket.org/tobiasbayr/mscm-web-code][BitBucket]].
+Large parts of the code as well as model parameter input files have been copied from there.
+The main code base of the climate model was substantially altered in the process of writing the thesis.
+
+** How to run the climate model
+To use this repository, you need a suitable installation of the packager manager [[https://nixos.org/][Nix]]
+(I recommend using the [[https://determinate.systems/nix-installer][Determinate Nix Installer]], as it works on all major OSes).
+
+Activate the development environment included in this repo using:
+#+begin_src shell
+  nix develop
+#+end_src
+
+If you have [[https://github.com/nix-community/nix-direnv][nix-direnv]] hooked into your shell,
+you can also load the development environment by running:
+#+begin_src shell
+  direnv allow
+#+end_src
+
+Now, simply launch the three phases of model
+(=extractions=, =spinup=, =runs=) in their proper order by running:
+#+begin_src shell
+  make
+#+end_src
+Depending on the speed of your computer, this might take a while.
+On my machine, which has an AMD Ryzen 7 3700X CPU
+with 16 threads each clocked at 4.4 GHz, it took about 13 minutes.
+
+You can also run each phase individually using e.g.:
+#+begin_src shell
+  make extractions # replace with your desired phase
+#+end_src
+Note that initially the phases will have to be run in order
+as they depend upon eachother's generated output files.

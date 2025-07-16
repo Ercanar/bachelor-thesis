@@ -1,0 +1,7 @@
+*.bin
+*.mod
+*.o
+*.pdf
+*.so
+/.direnv
+/result

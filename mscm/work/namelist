@@ -1,0 +1,7 @@
+&NUMERICS
+time_flux = 3
+time_ctrl = 3
+/
+&PHYSICS
+ dradius = 0
+/
