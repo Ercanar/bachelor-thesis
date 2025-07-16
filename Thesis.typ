@@ -213,9 +213,9 @@ This section contains all variables that define the state of the model at any gi
 After introducing a separate control program written in C, it was made possible to save the state of a running model,
 as well as loading that state as the initial state of a new run.
 
-To get at more in-depth impression of the code created, one can visit
-the GitLab repository "TODO NAME" on the LRZ, containing all of the code; see [x].
-// TODO create GitLab repository on LRZ
+The code of this thesis is stored in a private GitHub repository.
+If you would like access to the code, send me an email at
+#link("mailto:hanneswendt22@gmail.com") contaning your GitHub account name.
 
 
 == Experiments
