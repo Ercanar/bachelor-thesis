@@ -1,6 +1,7 @@
 *.bin
 *.mod
 *.o
+*.original
 *.pdf
 *.so
 /.direnv

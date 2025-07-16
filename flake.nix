@@ -20,6 +20,8 @@
 
           nativeBuildInputs = with pkgs; [ typst ];
 
+          env.SOURCE_DATE_EPOCH = 1752624000; # 2025-07-16
+
           installPhase = ''
             mkdir -p $out
             for i in ./*.typ; do
@@ -47,6 +49,11 @@
             ]))
 
             gfortran
+
+            (hunspell.withDicts (x: with x; [
+              en_US
+              de_DE
+            ]))
           ];
         };
       });

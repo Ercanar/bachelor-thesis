@@ -4,23 +4,38 @@
   Feedback Separation in a \
   Simple Global Climate Model*
 ])
-
 #place(horizon + center, line(length: 100%))
-
 #place(horizon + center, dy: 3em, text(size: 20pt)[
   BSc. Physics - Thesis \
   Hannes Wendt
 ])
 
+#pagebreak()
+
+#align(top + right, image("img/Universitaet_Logo_RGB.svg"))
+#place(horizon + center, dy: -6em, text(size: 30pt)[
+  *Arctic Amplification and \
+  Feedback Separation in a \
+  Simple Global Climate Model*
+])
+#place(horizon + center, line(length: 100%))
+#place(horizon + center, dy: 3em, text(size: 20pt)[
+  BSc. Physics - Thesis \
+  Hannes Wendt
+])
+
+
 #place(bottom + center, text(size: 15pt)[
-  Advisors: \
-  Dr. rer. nat. Sebastian Bathiany \
-  Prof. Dr. Katharina Krischer
+  Advisor: Dr. rer. nat. Sebastian Bathiany \
+  First Examiner: Prof. Dr. Katharina Krischer \
+  Second Examiner: Prof. Dr. Niklas Boers \ \
+  Submission Date: 25.07.2025 // TODO ändern, wenn montag abgabe ist
 ])
 
 #pagebreak()
 #set page(numbering: "I")
-#counter(page).update(2)
+#counter(page).update(3)
+
 
 // SaaSified Equation numbering & referencing
 #set math.equation(numbering: "(1)")
@@ -46,63 +61,105 @@
 
 #set heading(numbering: "1.1")
 
+// TODO SAßIFIZIEREN!!!
+
+
 = Preface
-In this study the Monash simple climate model will be investigated.
-Specifically, its ability to simulate arctic amplification will be tested.
-Furthermore, a feedback separation will be done.
-The findings will be compared to values of bigger, more complex models.
+In this thesis, the Monash simple climate model will be examined.
+A feedback separation will be done with the PRP method to obtain the partial temperature contributions of the feedback mechanisms.
+A spatial analysis of these values will then be done to investigate how well the model simulates arctic amplification.
+Furthermore, an analysis of synergy between the different feedbacks will be done.
+Lastly, the shortcomings of the model will be analyzed and possible improvements are presented.
 
 
 
-= The Monash simple climate model
+= Introduction
+== Climate system and climate sensitivity
+The Earth's climate system is an interconnected ensemble of the five subsystems: atmosphere, hydrosphere, cryosphere, lithosphere and biosphere.
+They all influence each other and their whole state is characterized as the climate system.
+To quantify the complex reaction of the climate system to relevant scenarios,
+e.g. the warming induced by man-made climate change, the term "climate sensitivity" was created.
+Climate sensitivity is the change in surface temperature of the earth when a doubling of the $"CO"_2$ is introduced and a new steady state is reached.
+To better understand the response of the climate system, research turned to simulating increasingly complex climate models.
+
+== Climate models
+The most simple climate model is a zero dimensional energy balance model.
+It only considers shortwave radiation from the sun hitting the earth, and the earth emitting black body radiation back out.
+Additions to such a model could entail a spatial difference of the surface temperature, an atmosphere, oceans etc.
+
+Eventually the models got more and more complex alongside the innovation of computational technology,
+culminating in the highly complex earth system models (ESMs) of today.
+
+One of the main purposes of climate models is to investigate what the value of the climate sensitivity is.
+The first approximation of the value was done by Arrhenius in 1896 by only considering energy balance factors, estimating it to be 1.5 K @Arrhenius.
+
+=== IPCC
+The Intergovernmental Panel on Climate Change (IPCC) is the United Nations body for assessing the science related to climate change.
+The objective of the IPCC is to provide governments with scientific information that they can use to develop climate policies.
+The IPCC does not conduct their own scientific research but rather compiles the information into assessment reports.
+This is done by experts volunteering their time to complete parts of these reports. @IPCC
+
+Since a lot of different models are parts of the reports, a better estimate for the climate sensitivity can be made.
+In the first assessment report of the IPCC the climate sensitivity is estimated to be between 1.5 K and 4.5 K @IPCC1992.
+
+In 2021, the sixth assessment report (AR6) was published.
+The best estimate of that report gave a climate sensitivity of 2.5 K to 4 K @IPCC_2023.
+
+
+#pagebreak()
+== The Monash simple climate model
 The Monash Simple Climate Model (MSCM) is based on the globally resolved energy balance (GREB) model.
 It was created by Dietmar Dommenget and Janine Flöter in 2011 and released alongside a paper in the journal "Climate Dynamics".
 This paper "Conceptual understanding of climate change with a globally resolved energy balance model" aimed to test
 how simple of a climate model one can use to still understand core concepts of climate change.
 They succeeded with that task, creating a model with severe limitations,
-which is still able to predict the temperature change that the IPCC model simulation results showed. @Dommenget2011
+which is still able to predict the temperature change that the IPCC model simulation results showed @Dommenget2011.
 
 In 2013 Dommenget created an interactive website of the model with the help of his colleagues.
 The website allows one to easily disassemble the climate into parts, leading to a good understanding of the processes.
-The data is pregenerated and not simulated directly, therefore making it impossible to use the website to conduct experiments other than those already on there.
 
-
-== Functionality
+=== Functionality
 The MSCM simulates several different processes of the climate and contains several feedbacks.
 These are: solar radiation, thermal radiation, a hydrological cycle, sensible heat, advection, diffusion, sea ice and a deep ocean.
 Furthermore, a heat flux correction is performed to more closely match more accurate models.
-The feedback mechanisms that are simulated include: temperature feedback, water vapor feedback and albedo feedback. @monash
+The feedback mechanisms that are simulated include: temperature feedback, water vapor feedback and albedo feedback @monash.
 
 The model has a temporal resolution of 12 hours, therefore rendering it unable to compute processes that occur on an hourly timescale.
 The spacial resolution is 3.75° x 3.75°, which is approximately 420km x 420km.
-A consequence being that rather local climate elements cannot be simulated accurately, if at all. @mscm-code
+A consequence being that rather local climate elements cannot be simulated accurately, if at all @mscm-code.
 
-The MSCM model has a one layer atmosphere, but applies a temperature flux correction to account for the weaknesses of the atmosphere model.
-This is realized by the subroutine called "qflux_correction", which changes the infrared emissivity from one to approximately $epsilon = 0.8$.
-The qflux corrections take topography into account and depend on humidity, CO2 and cloud cover.
+The MSCM model has a one-layer atmosphere, but applies a temperature flux correction to account for the weaknesses of the atmosphere model.
+This is realized by the subroutine called `qflux_correction`, which changes the infrared emissivity from one to approximately $epsilon = 0.8$.
+The qflux corrections take topography into account and depend on humidity, $"CO"_2$ and cloud cover.
 For further understanding of how the model works, I suggest using the open source code of the model. See @mscm-code.
+#figure(
+  image("img/MSCM-sample.png", width: 89%),
+  caption: [The surface temperature map depicting the yearly mean temperature of an pre-industrial steady state.
+            The image clearly shows the temperature differences in latitudes, with -52°C in Antarctica and up to 32°C in the tropics.
+            The colder temperatures within high mountain ranges, e.g. Cordilleras and Himalayas, can also be seen.
+            The data used was the raw output of the model and was processed by a self-made Python script.]
+)
 
-#pagebreak()
 
-= Theory
+
+= Theory and methodology
 In this section, the relevant processes and equations used in @results will be explained.
-
-== Climate sensitivity
-Climate sensitivity is the change in surface temperature of the earth when a doubling of the CO2 is introduced and a new steady state is reached.
-It includes all processes of the climate system like land surface, sea surface, ice, vegetation, ocean, atmosphere, clouds etc.
-Climate models aim to approximate that value by simulating the climate system with varying complexity.
-The first approximation of the value was done by Arrhenius in 1896 by only considering energy balance factors, estimating it to be 1.5K. @Arrhenius
-
-The Intergovernmental Panel on Climate Change (IPCC) compiled the results of numerous climate models in 2021 in their sixth assessment report.
-The best estimate of that report gave a climate sensitivity of 2.5K to 4K. @IPCC_2023
-
 
 == Feedbacks
 Feedbacks are processes whose reactions to a given state influence the state itself,
 leading to an altered state and therefore an altered reaction to that new state.
-This can lead to self-amplifying processes which also happened in the past (e.g. snowball earth).
+This can lead to self-amplifying processes which also happened in the past (e.g. Snowball Earth).
 
 === Feedback types and arctic amplification
+#figure(
+  image("img/7_10.png", width: 100%),
+  caption: ["Global mean climate feedbacks estimated in abrupt 4x$"CO"_2$ simulations
+            of 29 CMIP5 models (light blue) and 49 CMIP6 models (orange),
+            compared with those assessed in this Report (red).
+            The white line, black box and vertical line indicate the mean,
+            66% and 90% ranges, respectively." \ Image and caption directly from @IPCC_AR6.
+            ]
+)
 Climate feedbacks include, but are not limited to: Planck feedback, albedo feedback, cloud feedback, water vapor feedback and lapse rate feedback.
 These are the feedback mechanisms most commonly found within climate models.
 Additional feedbacks like vegetation feedbacks are not simulated in the MSCM and therefore not mentioned further.
@@ -113,31 +170,35 @@ therefore cooling the surface because infrared radiation is emitted.
 
 Surface albedo feedback describes the influence of the reflectivity of surfaces on the temperature.
 When ice melts due to warmer climate the reflectivity will decrease, leading to a further warming, leading to more ice melting.
+According to @IPCC_AR6 the albedo feedback warms the climate by $Delta T_A = 0.77 K$ when the $"CO"_2$ quadruples.
 
 Cloud feedback is the main contributor to the uncertainty of climate sensitivity in the IPCC report,
-which shows positive and negative values in the results of general circulation models (GCMs). @IPCC_2023 \
+which shows positive and negative values in the results of general circulation models (GCMs) @IPCC_2023.
+#pagebreak()
+According to @IPCC_AR6 the cloud feedback warms the climate by $Delta T_C = 0.64 K$ when the $"CO"_2$ quadruples.
 If warmer climate produces more low-altitude clouds, the feedback may be negative (cooling)
-since more incoming short wave radiation is reflected.
+since more incoming shortwave radiation is reflected.
 But a warmer climate could also change clouds in a way that the effect is positive.
 A more in-depth discussion on that is found in @Stephens2005.
 
 The water vapor feedback is a strongly positive one.
-Water vapor is the most impactful greenhouse gas as found in @Schmidt2010 in 2010.
+Water vapor is the most impactful greenhouse gas as found in @Schmidt2010.
 Warmer air can also contain more water vapor, leading to a stronger greenhouse effect.
+According to @IPCC_AR6 the water vapor feedbacks warms the climate by $Delta T_V = 2.79 K$ when the $"CO"_2$ quadruples.
 
 Lapse rate feedback describes the influence of the coupling between surface air and the top of the atmosphere (TOA).
 This coupling leads to different resulting behaviors depending on the latitude.
 In the tropics, the high convection creates a very strong coupling,
 leading to a steepening of the moist adiabatic lapse rate.
 Therefore, more latent heat is released into the atmosphere,
-resulting in a smaller increase in surface temperature to balance out a given TOA imbalance. @Pithan2014
-
+resulting in a smaller increase in surface temperature to balance out a given TOA imbalance @Pithan2014.
 The lapse rate feedback is therefore negative in the tropics.
-In the arctics, the surface air is colder and dense; there is almost no convection,
-coupling the surface air to the TOA.
+
+In the arctics, the surface air is colder and dense; there is almost no convection coupling the surface air to the TOA.
 Therefore, radiation is the primary coupling mechanism, resulting in a higher surface temperature difference
 to balance out a given TOA imbalance.
-The lapse rate feedback is positive in the arctics. @Pithan2014
+The lapse rate feedback is positive in the arctics @Pithan2014.
+According to @IPCC_AR6 the water vapor feedbacks cools the climate by $Delta T_V = 1.07 K$ when the $"CO"_2$ quadruples.
 
 Arctic amplification is the tendency of the higher latitudes of the globe to respond more to a given forcing than regions around the equator.
 @Pithan2014 describes that phenomenon in more detail. The authors outline the main contributors of arctic amplification as albedo feedback and lapse rate feedback.
@@ -154,21 +215,38 @@ each representing a different feedback mechanism.
 $ lambda = lambda_"temperature" + lambda_"albedo" + lambda_"clouds" + lambda_"water vapor" $ <lambda>
 $lambda$ must be negative to yield a stable climate system.
 The value of $lambda_"temperature"$ can be obtained by a simulation with no other feedbacks active.
-$ lambda_"temperature" = - F/(Delta T_F) $ <lambdaT> with $Delta T_F$ being the change in surface temperature. @Mauritsen2013
+$ lambda_"temperature" = - F/(Delta T_F) $ <lambdaT> with $Delta T_F$ being the change in surface temperature @Mauritsen2013.
 
 In the MSCM, the Planck feedback and the lapse rate feedback are not separated,
 instead being compounded: $lambda_"temperature" = lambda_"Planck" + lambda_"lapse rate"$.
 
 === Imposed feedbacks
-In a system where one feedback is imposed while the other feedbacks are not,
-that imposed feedback can be considered a kind of forcing.
-Because it is acting alongside the temperature feedback, the following equation is satisfied:
+There are two control runs done, CTRL/1x$"CO"_2$ (340 ppm $"CO"_2$) and 2x$"CO"_2$ (680 ppm $"CO"_2$), from which feedback values can be taken and inserted into new runs.
+If the values of the feedbacks are now inserted into a run, the feedbacks do not act freely but predetermined.
+These feedbacks are then called "imposed".
+The feedbacks can either be imposed from the CTRL run or the 2x$"CO"_2$ run.
+The possible combinations of all feedbacks being imposed are listed in @feedback_runs.
+
+When a feedback is imposed, it is acting alongside the temperature feedback and the following equation is satisfied:
 $ lambda_"feedback" dot Delta T = - lambda_"temperature" dot Delta T_"feedback" $
-with $Delta T$ being the surface temperature difference between a 1xCO2 and 2xCO2 run with all feedbacks unmodified.
+with $Delta T$ being the surface temperature difference between a 1x$"CO"_2$ and 2x$"CO"_2$ run with all feedbacks unmodified.
 From that equation, the feedback factor $lambda_"feedback"$ can be isolated:
 $ lambda_"feedback" = - lambda_"temperature" (Delta T_"feedback")/(Delta T) $ <feedbackim>
 
+To calculate the feedback factors using equation @feedbackim, $lambda_"temperature"$ (in short $lambda_T$) is needed
+and can be obtained using equation @lambdaT. We therefore need to calculate the value of the initial forcing $F$.
+According to @Dommenget2011 and @Dommenget_lecture, the formula used in the MSCM for determining the initial TOA forcing is:
+$ F = Delta Q approx Delta epsilon_"atmos" dot sigma dot (0.84 T_"surface")^4 $ <forcing>
+with $Delta epsilon_"atmos" approx 0.024$ being the change in the atmosphere emissivity due to the added $"CO"_2$ and $sigma$ being the Stefan-Boltzmann-constant.
+With a $T_"surface" = 286.959$ $K$ the forcing comes out to $F = 4.594$ $W m^(-2)$.
+Lastly, one needs the total surface temperature change with all feedbacks active: $Delta T = 2.498$ $K$.
+
+This method, also called partial radiative perturbation (PRP), can give the partial temperature contributions of all four feedbacks as well as their feedback factors.
+
 === Locked feedbacks
+In a run where a feedback is "locked", it is imposed from the CTRL run, while the other feedbacks are free to act.
+This differs from the imposed feedback section, since there _all_ feedbacks were imposed and not free to act.
+
 In a system where one or two feedbacks are locked to a control state, they can be viewed as a forcing.
 Like with the imposed feedbacks, a $accent(lambda, ~)$ can be derived for these experiments.
 When e.g. water vapor and cloud feedback are locked, one can obtain an estimation for
@@ -176,16 +254,39 @@ $ accent(lambda, ~)_"albedo" = - (lambda_"temperature" + F/(Delta accent(T, ~)_"
 When only one feedback is locked, the $accent(lambda, ~)$ for two feedbacks can be obtained with the same formula.
 This $accent(lambda, ~)$ represents the factor of both feedbacks acting at the same time.
 
+This method can give the partial temperature contributions of all but the temperature feedback as well as all combinations of those.
+Furthermore, one can once again determine the feedback factors of the individual feedbacks as well as their combinations.
+
 === Feedback synergy
-With the different factors of feedbacks and their combinations obtained with locking feedbacks,
+With the different factors of feedbacks and their combinations obtained by locking feedbacks,
 one can observe that the factor of two feedbacks is not the same as the sum of the individual feedback factors.
 This difference is known as feedback synergy and is defined as:
 $ S("feedback1", "feedback2") = accent(lambda, ~)_"feedback1, feedback2" - (accent(lambda, ~)_"feedback1" + accent(lambda, ~)_"feedback2") $ <synergy>
+As stated in the locked feedbacks section, all of the locked feedbacks act alongside the temperature feedback.
+So if only albedo, cloud and water vapor feedback are considered, the synergy between them represents the synergy of them each acting alongside
+the temperature feedback as well as any other feedback that is active and not separated in the locked feedback separation process.
+
+=== Other methods for feedback separation
+There are other methods to approximate the contributions of the different feedbacks that were not used here.
+
+One possibility was presented in @Soden2008.
+A method based on radiative kernels was implemented there to circumvent the problem of correlation that plagues other methods.
+The correlation describes the impact of feedbacks on one another, making it hard to distinguish the effects of single feedbacks.
+The radiative kernels method uses mean perturbations rather than temperature differences to estimate the given feedback effects.
+
+One other possibility also was mentioned in @Soden2008.
+Here, the sea surface temperature (SST) is fixed at two different levels.
+This method is mainly used to estimate the cloud feedback by using the difference
+between TOA net radiation for cloudy and clear sky.
+Furthermore, the method is not accurate since a substantial part in cloud forcing
+comes from the interactions with other feedbacks such as water vapor.
 
 
 
 = Experimental setup
 As mentioned in the introduction, the data from the interactive website is not usable for a full feedback separation.
+Certain runs are required in order to follow the methodology of @Mauritsen2013.
+However, it cannot be confirmed that these runs were performed using the correct initial state.
 Therefore, the open source code from @mscm-code was used and modified to compute the relevant simulations.
 
 
@@ -201,6 +302,7 @@ Furthermore, the use of the "intent" functionality helped with understanding the
 by categorizing values into function input or output parameters or internal temporaries.
 Those structural improvements to the model increased code quality and made it easier to understand.
 As mentioned before, the model does not have the functionality to conduct experiments that were not intended by the creators when writing the model.
+#pagebreak()
 For said experiments, the model had to be able to do two distinct things:
 
 - Chaining simulation runs, i.e. the final state of the first run is used as the initial state of the next run
@@ -213,9 +315,9 @@ This section contains all variables that define the state of the model at any gi
 After introducing a separate control program written in C, it was made possible to save the state of a running model,
 as well as loading that state as the initial state of a new run.
 
-The code of this thesis is stored in a private GitHub repository.
+The code of this thesis is stored in a private GitHub repository due to licensing concerns.
 If you would like access to the code, send me an email at
-#link("mailto:hanneswendt22@gmail.com") contaning your GitHub account name.
+#link("mailto:hanneswendt22@gmail.com") containing your GitHub account name.
 
 
 == Experiments
@@ -227,7 +329,7 @@ The first preparation needed are the values of the feedbacks for the imposing an
 To accomplish that, a pre-industrial run with a run time of 50 years is simulated to reach a steady state.
 From that point, two separate runs are performed for 75 years each, with their whole state recorded and saved.
 These two runs feature all feedbacks enabled and not tampered with.
-One run is a pre-industrial run (340 ppm CO2) named "CTRL" and the other is a 2xCO2 run (680 ppm) named "2xCO2".
+One run is a pre-industrial run (340 ppm $"CO"_2$) named "CTRL" and the other is a 2x$"CO"_2$ run (680 ppm) named "2x$"CO"_2$".
 
 Their only purpose is the gathering of the values used later on.
 The second preparation needed is a state from which all the runs to be analyzed are started.
@@ -239,21 +341,39 @@ The final state of the spin-up run is then saved and used as a starting point fo
 
 === Feedback separation and arctic amplification
 The runs that will be analyzed are launched from the same initial state.
-They include every possible combination of 1xCO2 with feedbacks either locked, imposed or free;
-the same also applies for 2xCO2.
+They include every possible combination of 1x$"CO"_2$ with feedbacks either locked, imposed or free;
+the same also applies for 2x$"CO"_2$.
 The naming scheme consists of chained expressions which describe the state of the feedbacks.
-For example `X1-A0-V1-C2` refers to the run where CO2 is pre-industrial (`X1`),
+For example `X1-A0-V1-C2` refers to the run where $"CO"_2$ is pre-industrial (`X1`),
 albedo feedback is enabled and free (`A0`), water vapor feedback is imposed or locked to CTRL (`V1`)
-and cloud feedback is imposed or locked to 2xCO2 (`C2`).
+and cloud feedback is imposed or locked to 2x$"CO"_2$ (`C2`).
 For more information on which runs were done, use @feedback_runs in the appendix.
 
 
 
+#pagebreak()
 = Results <results>
 The results were obtained using Python scripts to analyze the output of the model.
 #figure(
   image("img/some-runs.svg", width: 97%),
-  caption: [Some distinct runs are plotted with surface temperature in °C over time in years.]
+  caption: [The image contains different graphs which are plotted with global yearly mean surface temperate in °C over time in years.
+            The non-altered runs, i.e. 340 ppm and 680 ppm $"CO"_2$ runs, are plotted with thicker lines, as they represent the control runs. The spinup is also shown.
+            The other runs are hand picked (dashed lines) from all of the different runs to not make the image too crowded, but still display the differences within the ensemble.
+            One can clearly see a split within the hand picked runs.
+            The runs with `V2` within their name follow the curvature 2x$"CO"_2$ control run, while the other five runs follow the 1x$"CO"_2$ control run.]
+)
+#figure(
+  image("img/balkendiagrammgeneratorpythonskriptdingskramsoutputdatei.svg", width: 100%),
+  caption: [
+    The different values of the temperature contributions and sums are shown.
+    The red bar represents the climate sensitivity, the dark red bar the sum of the different feedback contributions.
+    In order, the next four bars show the temperature feedback, the albedo feedback, the water vapor feedback, and the cloud feedback.
+    The last six bars show the values obtained by the locking of feedbacks, leading to albedo, cloud and water vapor values as well as the different possible sums of those.
+    The values over/under the bars are the values or averages of the bars.
+    The x axis displays which $Delta T_i$ is shown.
+    For the $Delta T_i$ one can see the 8 different values that were extracted from the raw data.
+    One can see that the vapor feedback is by far the main contributor to the climate sensitivity within the MSCM.
+    The values are taken from @feedback_runs and @feedback_locked.]
 )
 
 
@@ -263,61 +383,148 @@ needs to be subtracted from the mean temperature of a run with a feedback impose
 In the example, this difference would yield one value of $Delta T_"albedo"$.
 Other runs also yield one value, so e.g. `X1-A1-V2-C1` subtracted from `X1-A2-V2-C1`.
 The raw temperature values will be listed in their entirety in the appendix, see @feedback_runs.
+To better visualize the partial temperature contributions and their spatial distribution,
+several figures will be shown in the following, also for later reference.
+#figure(
+  image("img/Delta T_F.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A1-V1-C1` and `X1-A1-V1-C1` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta T_F$.
+            The mean value of $Delta T_F$ in this figure is 0.334 K, the maximum is 1.107 K and the minimum is 0.065 K.
+            One can clearly see that most of the warming happens in the arctics and over Central Asia as well as the Sahara.
+            Furthermore, more warming occurs over land than over the oceans.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_F>
+#figure(
+  image("img/Delta T_A.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X1-A2-V1-C1` and `X1-A1-V1-C1` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta T_A$.
+            The mean value of $Delta T_A$ in this figure is 0.086 K, the maximum is 1.119 K and the minimum is 0 K.
+            The warming occurs mainly in the arctics and within Central Asia and north America.
+            There is almost no warming in the tropics and the non-arctic southern hemisphere.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_A>
+#figure(
+  image("img/Delta T_C.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X1-A1-V1-C2` and `X1-A1-V1-C1` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta T_C$.
+            The mean value of $Delta T_C$ in this figure is -0.2639 K, the maximum is 0.605 K and the minimum is -4.406 K.
+            Most of the landmasses and equatorial oceans are experiencing a cooling with the strongest affected regions being
+            the Sahara, Australia and Antarctica.
+            A warming effect mainly occurs in the North Pacific, North Atlantic and Southern Ocean regions.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_C>
+#figure(
+  image("img/Delta T_V.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X1-A1-V2-C1` and `X1-A1-V1-C1` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta T_V$.
+            The mean value of $Delta T_V$ in this figure is 2.069 K, the maximum is 3.337 K and the minimum is 1.069 K.
+            The warming happens all over the globe with the minimum over the Antarctic.
+            The strongest warming happens within the Himalayas and the American Cordilleras as well as the North Pacific.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_V>
+#figure(
+  image("img/sum Delta T_i.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A2-V2-C2` and `X1-A1-V1-C1` is displayed.
+            Meaning it is a spatial distribution of the sum of all feedback contributions $sum_i Delta T_i$.
+            The mean value in this figure is 2.187 K, the maximum is 4.481 K and the minimum is -1.2 K.
+            The strongest warming happens in Central Asia and the Arctic as well as the Southern Ocean.
+            Exceptions from warming are Australia, South Africa and the Sahara region, where a cooling effect is observed.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-sum>
+#figure(
+  image("img/Control.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2` and `X1` is displayed.
+            Meaning it is a spatial distribution of the climate sensitivity $Delta T$.
+            The mean value of $Delta T$ in this figure is 2.498 K, the maximum is 4.771 K and the minimum is 1.809 K.
+            The strongest warming occurs in Central Asia, the Arctic and the Southern Ocean as well as the Sahara region and Australia.
+            The weakest warming happens over the equatorial regions, especially the oceans.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-control>
+
+
 
 === Imposed feedbacks
-To calculate the feedback factors using equation @feedbackim, $lambda_"temperature"$ (in short $lambda_T$) is needed
-and can be obtained using equation @lambdaT. We therefore need to calculate the value of the initial forcing $F$.
-According to @Dommenget2011 and @Dommenget_lecture, the formula used in the MSCM for determining the initial TOA forcing is:
-$ F = Delta Q approx Delta epsilon_"atmos" dot sigma dot (0.84 T_"surface")^4 $ <forcing>
-with $Delta epsilon_"atmos" approx 0.024$ being the change in the atmosphere emissivity due to the added CO2 and $sigma$ being the Stefan-Boltzmann-constant.
-With a $T_"surface" = 286.959$ $K$ the forcing comes out to $F = 4.594$ $W m^(-2)$.
-Lastly, one needs the total surface temperature change with all feedbacks active: $Delta T = 2.498$ $K$.
-The following table contains the average $Delta T_i$ for each feedback taken from @feedback_runs in the appendix
-as well as the calculated values of the feedback factors according to equations @lambdaT and @feedbackim.
+#set par(justify: false)
 #figure(
   table(
     columns: 7,
     table.header(
-      [], [Temperature], [Albedo], [Cloud], [Water Vapor], [Sum], [Measured $Delta T$ [K]]
+      [Source], [$Delta T_F$ [K]], [$Delta T_A$ [K]], [$Delta T_C$ [K]], [$Delta T_V$ [K]], [$sum_i Delta T_i$], [$Delta T$ [K]]
     ),
-    [$Delta T_i$ [K]            ], [  0.316], [0.084], [-0.269], [ 2.056], [ 2.187], [2.498],
-    [$lambda_i [W m^(-2)K^(-1)]$], [-14.529], [0.487], [-1.565], [11.958], [-3.649], [     ],
+    [MSCM          ], [0.316], [0.084], [-0.269], [2.056    ], [2.187], [2.498],
+    [@Mauritsen2013], [1.00 ], [0.17 ], [ 0.19 ], [1.57     ], [2.93 ], [2.91 ],
+    [@Dufresne2008 ], [1.15 ], [0.16 ], [ 0.46 ], [0.6$""^1$], [1.96 ], [     ],
+    [@IPCC_AR6     ], [     ], [     ], [      ], [         ], [     ], [3.78 ],
   ),
-  caption: [Values of temperature composition and feedback factors with imposed feedback.
-            The temperature values are averages taken from @feedback_runs.]
-) <imposed_table>
+  caption: [Values of temperature composition of the different feedbacks $Delta T_i$ as well as their sum $sum_i Delta T_i$ and the climate sensitivity $Delta T$.
+            The table contains values from four different indicated sources, where the MSCM is the first one.
+            The values were taken out of tables within the respective sources and the MSCM values come from @feedback_runs.
+            E.g. the value for $Delta T_F$ is the average of the 8 values for $Delta T_F$ found within @feedback_runs;
+            apply the same for all $Delta T_i$. The climate sensitivity of the MSCM is also listed in @feedback_runs.
+            $""^1$ This value is $Delta T_V + Delta T_"lapse rate"$.]
+) <imposed_temp>
 
-
-=== Locked feedbacks
-The locked feedback factors $accent(lambda, ~)_i$ are calculated using equation @feedbacklo.
-The values of $lambda_T$ and $F$ are taken from the previous section.
-The values of $Delta accent(T, ~)_i$ are again averages taken from the respective parts of @feedback_locked in the appendix.
 #figure(
   table(
-    columns: 7,
+    columns: 6,
     table.header(
-      [], [Albedo], [Cloud], [Water Vapor], [Albedo-Cloud], [Albedo-Vapor], [Cloud-Vapor]
+      [Source], [$lambda_T$], [$lambda_A$], [$lambda_C$], [$lambda_V$], [$lambda$]
     ),
-    [$Delta accent(T, ~)_i$ [K]            ], [0.363], [0.334], [ 2.191], [0.363], [ 2.461], [ 2.191],
-    [$accent(lambda, ~)_i [W m^(-2)K^(-1)]$], [1.859], [0.754], [12.432], [1.859], [12.662], [12.432]
+    [MSCM          ], [-14.529  ], [0.487], [-1.565], [11.958  ], [-3.649],
+    [@Mauritsen2013], [ -3.45   ], [0.20 ], [ 0.23 ], [ 1.86   ], [-1.16 ],
+    [@Dufresne2008 ], [$-4.04^1$], [0.26 ], [ 0.69 ], [$1.80^2$], [-1.27 ],
+    [@IPCC_AR6     ], [$-3.22^1$], [0.39 ], [ 0.49 ], [$1.25^2$], [-1.03 ],
   ),
-  caption: [
-    Values of temperature composition and feedback factors with locked feedback.
-    The temperature values are averages taken from @feedback_locked.
-  ],
-) <locked_table>
+  caption: [Values of the different feedback factors $lambda_i$ as well as their sum $lambda$.
+            The table contains values from four different indicated sources, where the MSCM is the first one.
+            The values were taken out of tables within the respective sources.
+            The values of the MSCM were obtained using the respective values from @imposed_temp and Equations @lambdaT and @feedbackim. \
+            $""^1$ This value only represents the Planck feedback factor, so $lambda_T - lambda_"lapse rate"$. \
+            $""^2$ This value represents the sum of $lambda_V$ and $lambda_"lapse rate"$.]
+) <imposed_delta>
 
-#figure(
-  image("img/balkendiagrammgeneratorpythonskriptdingskramsoutputdatei.svg", width: 100%),
-  caption: [
-    The different values of the temperature contributions and sums are shown.
-    The values over/under the bars are the averages of the bars.
-    The x axis gives information which $Delta T_i$ is shown.
-    The values are taken from @feedback_runs and @feedback_locked.
-  ]
-)
+#set par(justify: true)
 
+The values of the feedback factors as well as the $Delta T_i$ from @imposed_temp
+suggest that the climate simulated within the model is stable.
+With a value of $lambda = -3.649$ it is a much more stable climate than in bigger models.
 
+The temperature feedback has a highly negative value,
+meaning a small temperature change is necessary to balance out a TOA imbalance when only looking at that feedback.
+It is almost four times lower than the feedback factors in the other papers.
+That means that the Planck feedback and/or the lapse rate feedback is severely stronger than it should be.
+The forcing $F$ with which $lambda_T$ is calculated (see @forcing) depends on the surface temperature and the change of atmospheric emissivity.
+The MSCM assumes a value of $epsilon approx 0.800$ with a pre-industrial $"CO"_2$.
+With clear sky conditions, the emissivity of the atmosphere at TOA can lie between $epsilon = 0.756$ and $epsilon = 0.838$,
+with a global mean of $epsilon = 0.796$ currently @Pandey1995.
+
+These values are a higher boundary to the mean global emissivity because only clear sky conditions are accounted for.
+According to @Nakanishi2025 the atmospheric emissivity will be lowered by the presence of clouds when a warming occurs.
+With those facts it is clear that at least the Planck feedback is stronger within the MSCM
+compared to other models that use a more realistic emissivity of the atmosphere.
+To verify the correctness of the lapse rate feedback, either the code has to be analyzed
+or a separation of the temperature feedback into Planck and lapse rate feedback has to be performed.
+
+#pagebreak()
+The other feedback factors scale with $lambda_T$, so the following sections will not necessarily be analyzed or compared using $lambda_i$ but rather $Delta T_i$.
+
+The cloud feedback has a negative value, suggesting that clouds cool the climate system and making it more stable.
+If compared to the mostly positive or neutral values of the other models a clear discrepancy can be seen.
+The cloud model of the MSCM is a very strongly simplified one.
+It takes its values mostly from a database of recorded fields of cloud coverage and assigns every cloud a constant albedo.
+According to @Stephens2005, "[...] a number of cloud properties, including cloud amount,
+cloud height and vertical profile, optical depth, liquid and ice water contents,
+and particle sizes affect the radiation budget of earth and are all potentially relevant to the cloud feedback problem."
+Most of these properties are not considered in the MSCM, leading to great differences in feedback strength compared to the other models.
+
+The main contributor to warming is the water vapor feedback.
+If compared to the other models it is about 25% higher when considering the $Delta T_V$.
+For such a simple model that is quite reasonable and does not point to any big shortcomings with a high certainty.
+
+The albedo feedback is slightly positive.
+The MSCM assigns a specific albedo value to all clouds and all ice-covered points ($alpha = 0.35$) and a separate value to all other points ($alpha = 0.1$).
+Bigger models, e.g. the ECHAM6 used by @Mauritsen2013, contain some kind of vegetation model, leading to a more detailed and accurate albedo simulation @ECHAM6.
+As well as not containing a vegetation model, the MSCM has a rather simple sea ice model, possibly leading to a further lowering of the albedo feedback impact.
 
 === Arctic amplification
 The results concerning arctic amplification are obtained the same way as imposed feedbacks with the only change being
@@ -338,98 +545,23 @@ $T_"surface, equatorial" = 297.215$ $K$; $F_"equatorial" = 5.287$ $W m^(-2)$.
   ),
   caption: [
     Values of temperature composition and feedback factors with imposed feedback, separated into polar regions and tropics.
-    The temperature values are averages taken from @feedback_runs.
+    One can see that the arctics experience a stronger warming than the tropics.
+    The values of the temperature feedback factors in the tropics are anomalous, especially the temperature feedback factor.
+    The temperature values are obtained like in @imposed_temp.
+    The feedback factors are calculated using equations @lambdaT and @feedbackim.
   ],
 ) <arctic_table>
 
-
-== Feedback synergy
-The feedback synergy is computed via equation @synergy.
-It has to be noted that the feedbacks used in that equation can also be a combination of two feedbacks.
-So e.g. $S(A, "CV") = accent(lambda, ~)_"ACV" - (accent(lambda, ~)_A + accent(lambda, ~)_"CV")$.
-@locked_table indicates that $Delta T_"ACV"$ was not measured and therefore $accent(lambda, ~)_"ACV"$ cannot be obtained via equation @synergy.
-For that reason we extract it from two values that come from previous sections:
-$ accent(lambda, ~)_"ACV" = sum_i lambda_i - lambda_T = 10.880 " " W m^(-2) K^(-1) $
-The other synergy values are displayed in @sixegg.
-#figure(
-    image("img/synergy.svg", width: 50%),
-    caption: [
-      Within the circles, the feedbacks with their factors are displayed.
-      The blue numbers on the outside are the values of the synergies.
-      All values have [$W m^(-2) K^(-1)$]. Inspired by @Mauritsen2013.
-    ],
-) <sixegg>
-
-
-
-= Discussion
-In this section, the results will be explained and compared to the results in @Dufresne2008, @Langen2012 and @Mauritsen2013.
-
-
-== Feedback separation <feedback-separation>
-The values of the feedback factors as well as the $Delta T_i$ from @imposed_table
-suggest that the climate simulated within the model is stable.
-Reason being, that the $lambda$ of the system is negative:
-$ lambda = sum_i lambda_i = -3.649 " " W m^(-2) K^(-1) $
-Compared to the values of the aforementioned studies, $-1.24$ $W m^(-2) K^(-1)$ from @Mauritsen2013,
-$-1.27$ $W m^(-2) K^(-1)$ from @Dufresne2008 and $-2.0$ $W m^(-2) K^(-1)$ from @Langen2012,
-the value of the MSCM is rather low. That indicates a much more stable climate than in bigger models.
-Another notable thing to mention is the difference between the measured climate sensitivity
-and the sum of the $Delta T_i$, being $Delta (Delta T) = 0.3111$ $K$.
-The measured climate sensitivity is the greater of the two values.
-The reason behind that difference will be mentioned further in @arctic-amplification and @feedback-synergy.
-
-The temperature feedback has a highly negative value of $lambda_T = -15.651$ $W m^(-2) K^(-1)$,
-meaning a small temperature change is necessary to balance out a TOA imbalance when only looking at that feedback.
-It is almost four times the feedback factors in the other papers ($-3.45$ $W m^(-2) K^(-1)$, $-4.04$ $W m^(-2) K^(-1)$ and $-4.20$ $W m^(-2) K^(-1)$).
-That means that the Planck feedback and/or the lapse rate feedback is severely stronger than it should be.
-The forcing $F$ with which $lambda_T$ is calculated (see @forcing) depends on the surface temperature and the change of atmospheric emissivity.
-With clear sky conditions, the emissivity of the atmosphere at TOA can lie between $epsilon = 0.756$ and $epsilon = 0.838$,
-with a global mean of $epsilon = 0.796$. @Pandey1995
-
-These values are a higher boundary to the mean global emissivity because only clear sky conditions are accounted for.
-According to @Nakanishi2025 the atmospheric emissivity will be lowered by the presence of clouds when a warming occurs.
-With those facts it is clear that at least the Planck feedback is stronger within the MSCM
-compared to other models that use a more realistic emissivity of the atmosphere.
-To verify the correctness of the lapse rate feedback, either the code has to be analyzed
-or a separation of the temperature feedback into Planck and lapse rate feedback has to be performed.
-The MSCM does simulate diffusion and advection, but the code is the most complex, convoluted and long part of the whole model.
-A separation of the temperature feedback will be done in @arctic-amplification.
-The other feedback factors scale with $lambda_T$, so the following sections will not necessarily be analyzed or compared using $lambda_i$ but rather $Delta T_i$.
-
-The cloud feedback has a negative value, suggesting that clouds cool the climate system and making it more stable.
-If compared to the mostly positive or neutral values of the other models ($0.23$ $W m^(-2) K^(-1)$, $0.69$ $W m^(-2) K^(-1)$ and $0.088$ $W m^(-2) K^(-1)$)
-a clear discrepancy can be seen.
-The cloud model of the MSCM is a very strongly simplified one.
-It takes its values mostly from a database of recorded fields of cloud coverage and assigns every cloud a constant albedo.
-According to @Stephens2005, "[...] a number of cloud properties, including cloud amount,
-cloud height and vertical profile, optical depth, liquid and ice water contents,
-and particle sizes affect the radiation budget of earth and are all potentially relevant to the cloud feedback problem."
-Most of these properties are not considered in the MSCM, leading to great differences in feedback factors compared to the other models.
-More in depth discussion on the cloud model will be done in @feedback-synergy.
-
-The main contributor to warming is the water vapor feedback with a value of $lambda_V = 11.958$ $W m^(-2) K^(-1)$ and a warming of $Delta T_V = 2.056 K$.
-If compared to the other models ($1.57 K$, $1.7 K$ and $1.67 K$) it is about 25% higher.
-For such a simple model that is quite reasonable and does not point to any big shortcomings with a high certainty.
-
-The albedo feedback is slightly positive. With a warming effect of $Delta T_A = 0.084 K$,
-it is near the range of $Delta T_A approx 0.15 K$ to $Delta T_A = 0.3 K$
-provided by the papers @Dufresne2008 and @Mauritsen2013.
-The MSCM assigns a specific albedo value to all clouds and all ice-covered points ($alpha = 0.35$) and a separate value to all other points ($alpha = 0.1$).
-Bigger models, e.g. the ECHAM6 used by @Mauritsen2013, contain some kind of vegetation model, leading to a more detailed and accurate albedo simulation. @ECHAM6
-
-As well as not containing a vegetation model, the MSCM has a rather simple sea ice model, possibly leading to a further lowering of the albedo feedback impact.
-
-
-== Arctic amplification <arctic-amplification>
 When analyzing the spatial differences of the feedback factors, it is clear that some kind of arctic amplification happens within the simulation.
 The climate sensitivity of the polar regions is approximately 38% higher than in the tropics and 22% higher than the global mean.
-
-First of all, the temperature feedback factor is closer to zero than the global or equatorial mean.
-This indicates a more unstable climate and a more pronounced warming relative to the equatorial region.
-Compared to the values in @Langen2012, $lambda_(T, "polar") = -3.5$ $W m^(-2) K^(-1)$ and $lambda_(T, "equatorial") = -5.1$ $W m^(-2) K^(-1)$, the MSCM again makes the climate more stable.
-The arctics have an 18% larger feedback factor while the tropics have an over 5 times larger value.
+Since these values come from the same data as the visualization in @figure-control, one can perform a crosscheck.
+And indeed there are clear signs of arctic amplification visible, since especially the equatorial ocean regions warm way less than the rest of the globe.
+Furthermore, the Southern Ocean and the arctic region seem to be warming faster than the average of the globe, confirming the initial facts visually.
 #pagebreak()
+First of all, the polar temperature feedback factor is closer to zero than the global or equatorial mean.
+This indicates a more unstable climate and a more pronounced warming relative to the equatorial region.
+When crosschecked with @figure-T_F, this fact is clearly visible.
+The arctics have an 18% larger feedback factor while the tropics have an over five times larger value than the values in @Langen2012, see @arctic_table.
 According to @Langen2012, one can estimate the Planck feedback with the equation $ lambda_0 approx - 4 epsilon sigma T_("surf")^3 $
 With that, we can separate the temperature feedback factors in the respective regions.
 Doing that yields values that are shown in @lapserate.
@@ -447,12 +579,14 @@ Doing that yields values that are shown in @lapserate.
     [equatorial], [-26.621], [-4.907], [-21.714],
     table.cell(
       rowspan: 2,
-      [@Langen2012],
+      [@Langen2012$""^1$],
     ),
     [polar]     , [-3.5], [-3.0], [-0.54],
     [equatorial], [-5.1], [-3.5], [-1.6 ]
   ),
-  caption: [Values for Planck and lapse rate feedback factors from the MSCM and @Langen2012.],
+  caption: [Values for Planck and lapse rate feedback factors from the MSCM and @Langen2012.
+            The main difference between the two models lies within the equatorial lapse rate, being more than 13 times more negative in the MSCM.
+            $""^1$ The values of this source are for an aqua planet, not for a real world.],
 ) <lapserate>
 
 While the differences in Planck feedback are reasonably small,
@@ -461,100 +595,364 @@ It is roughly 13 times larger in magnitude than the corresponding value of the o
 This points to a weakness of the MSCM's simplicity once again, likely some kind of wrong lapse rate model used within.
 It also has to be noted that according to @Pithan2014 the lapse rate feedback should be one of the main contributors to arctic amplification
 and therefore the feedback factor should be positive.
+Again from this point on the feedback factors of the other feedbacks will be disregarded, because they scale with the much too magnitudal $lambda_T_i$.
+Furthermore, feedback factors are normally only defined on a global scale, meaning an accurate use of them cannot be guaranteed when not viewing the whole globe.
+Therefore a new table for better comparisons is necessary.
 
-The cloud feedback has an effect, cooling the polar regions and the tropics.
-The almost daily storms in the tropics are of such size and magnitude that they block a substantial amount of short wave radiation (SWR) from reaching the ground.
-But we also know from the previous section that the cloud model of the MSCM is flawed.
-Compared to the values of @Langen2012, $Delta T_C = 1.745 K$ for the arctic and $Delta T_C = 1.495 K$ for the tropics,
-they are again different in both magnitude and sign.
-This points to the same arguments mentioned within @feedback-separation and will be discussed more in @feedback-synergy.
+#figure(
+  table(
+    columns: 7,
+    table.header(
+      [region], [source], [$Delta T_F$ [K]], [$Delta T_A$ [K]], [$Delta T_C$ [K]], [$Delta T_V$ [K]], [$sum_i Delta T_i$ [K]]
+    ),
+    table.cell(
+      rowspan: 4,
+      [polar]
+    ),
+    [MSCM                  ], [0.747], [0.289], [-0.103], [1.957], [2.890],
+    [@Taylor2013, arctis   ], [1.35 ], [2.22 ], [ 0.54 ], [1.26 ], [3.73 ],
+    [@Taylor2013, antarctis], [1.38 ], [1.44 ], [ 0.57 ], [0.84 ], [2.58 ],
+    [@Langen2012$""^1$     ], [0.857], [     ], [ 1.745], [2.622], [5.224],
+    table.cell(
+      rowspan: 3,
+      [tropics]
+    ),
+    [MSCM             ], [0.199], [ 0.004], [-0.477], [1.978], [1.703      ],
+    [@Taylor2013      ], [0.87 ], [-0.06 ], [-0.09 ], [1.502], [1.142$""^2$],
+    [@Langen2012$""^1$], [0.745], [      ], [ 1.495], [2.207], [4.447      ],
+  ),
+  caption: [Values of different $Delta T_i$ in both polar and tropical regions from the different indicated sources.
+            Empty fields indicate that no values could be assigned to it due to the absence of that value or its composition within the source.
+            The values of the MSCM are lower in every category than any other comparable value listed.
+            $""^1$ The values of this source are for an aqua planet, not for a real world.
+            $""^2$ The values contain more than the feedbacks listed, such as ocean feedback.],
+) <arctic_temp>
+
+The cloud feedback has the effect of cooling the polar regions and the tropics.
+The main reason for that is the overly simple cloud model of the MSCM.
+For a 2x$"CO"_2$ scenario it assumes a globally constant cloud coverage of 0.7.
+Furthermore, only cloud albedo is taken into account as an impact of the clouds.
+Since there is no coupling between clouds and other feedbacks and the cloud cover is constant and relatively high,
+the strongest impact of the cloud model should be in places where there are normally not many clouds present.
+These places include the Sahara region, Australia and Antarctica.
+If crosschecked with @figure-T_C, that assumption seems to be confirmed,
+since parts of the Sahara are cooled by the clouds by up to 4.4 K.
+The other models suggest that the partial temperature contribution of clouds should be between 1.1 K and 1.75 K in both regions.
+That points again to the fact that the cloud model of the MSCM is not sophisticated in spatial distribution
+as well as in interactions with other feedbacks such as water vapor.
 
 The water vapor feedback is more interesting. It is weaker in the the polar regions than globally or equatorially.
 But the equatorial regions themselves have weaker water vapor feedback than the global mean,
 despite the more than 10 K higher temperature.
-That does not match the theory and points to a inconsistency within the hydrological part of the MSCM.
-That suspicion strengthens when the values are compared.
-The other model suggest values of $Delta T_V = 2.622 K$ and $lambda_V = 1.8$ $W m^(-2) K^(-1)$ in the arctics
-and $Delta T_V = 2.207 K$ and $lambda_V = 2.5$ $W m^(-2) K^(-1)$ in the tropics with a global mean between these values; see @Langen2012.
-The source of the inconsistency can be most likely found within the simplicity of the hydrological model.
-The logic in the code for that is only 12 lines long and takes real world measured static fields and averages,
-leading to possible inconsistencies with the spatial distribution that then leads to the anomalous values of the feedback factors.
+If a crosscheck with @figure-T_V is done one can clearly see that Antarctica has the global minimum of the effect of the water vapor feedback.
+Furthermore, a clear lowering of the feedback's impact can be seen over the tropical region.
+Compared to @Taylor2013, the MSCM overestimated the impact of the water vapor feedback by between 30% and 85% depending on the region.
+All of those facts point towards an inconsistency within the hydrological part of the MSCM.
 
 The albedo feedback is also strongest in the arctics, while being close to zero in the tropics.
-The estimated temperature contribution in the arctics is about $Delta T_A = 0.75 K$.
-In contrast stands @Hahn2021, which compares all CMIP5 and CMIP6 models
-with regards to feedback temperature contribution in the arctics: $Delta T_A approx 3.8 K$.
-
-This indicates that the MSCM underestimates the impact of the albedo feedback in the arctics.
-That discrepancy could be attributed to the model underestimating the albedo of the ice
-and overestimating the albedo of ice-free points.
-Which would lead to a lower change in albedo, and a lower impact of the albedo feedback.
+The crosscheck with @figure-T_A confirms that quite well visually.
+Compared again to @Taylor2013, the MSCM gets the albedo feedback of the tropics quite well,
+but falters at the arctics. The impact of albedo feedback is more than six times larger
+within @Taylor2013.
+This indicates that the MSCM underestimates the impact of the albedo,
+which would lead to a lower change in albedo, and a lower impact of the albedo feedback.
 The average albedo of the MSCM lies between 0.1 and 0.35
-while real world measurements reveal it to be close to $alpha = 0.43$. @Marcianesi2021
-#pagebreak()
-The total feedback factors are $lambda_"polar" = -1.227$ $W m^(-2) K^(-1)$ and $lambda_"equatorial" = -8.501$ $W m^(-2) K^(-1)$,
+while real world measurements reveal it to be close to $alpha = 0.43$ @Marcianesi2021.
+
+The total feedback factors are $Delta T_"polar" = 3.049 K$ and $Delta T_"equatorial" = 2.21 K$,
 further strengthening the hypothesis that arctic amplification is a result of the simulation.
 The polar region is much more unstable, reacting with a much stronger surface temperature increase to a given forcing
 than any other region, especially when compared to the much more stable equatorial region.
-Although the MSCM underestimates the effect of arctic amplification severely.
 
-Again there is a difference between the measured $Delta T$ and the sum of the $Delta T_i$.
-This time being $Delta (Delta T) = 0.1589 K$ for the arctics and $Delta (Delta T) = 0.5072 K$ for the tropics.
-That indicates that the effect on the sum is a process that warms the global climate, and doing so stronger in the tropics and weaker in the arctics.
+=== Discrepancy of temperature differences
+Within the last two sections a discrepancy between $Delta T$ and $sum_i Delta T_i$ can be found.
+This discrepancy, denoted $Delta (Delta T)$, assumes different values for the different regions.
+The global mean presents $Delta (Delta T) = 0.311$ $K$, while the arctics and the tropics give 0.159 K and 0.507 K respectively.
+That indicates that the effect on the sum is a process that warms the global climate, and does so stronger in the tropics and weaker in the arctics.
 This process could be another feedback that wasn't separated out or a possible correction within the model that was somehow not considered in the separation process.
-@Mauritsen2013 implies that if $Delta (Delta T)$ gets substantially big, a meaningful feedback separation has not been achieved.
 
+@Mauritsen2013 implies that if $Delta (Delta T)$ gets substantially big, a meaningful feedback separation has not been achieved.
 This leads to the natural conclusion that either the MSCM is incapable of having a meaningful feedback separation performed on it
 or that some kind of error was done following the methodology of @Mauritsen2013 to try to do the feedback separation on the MSCM.
 
 
-== Feedback synergy <feedback-synergy>
+#pagebreak()
+== Locked feedbacks and feedback synergy
+The following figures depict the spatial distribution of the different $Delta accent(T, ~)_i$ and will be used in further discussion.
+#figure(
+  image("img/Delta T_A locked.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A0-V1-C1` and `X1-A0-V1-C1` is displayed.
+            Meaning it is a spatial distribution of $Delta accent(T, ~)_A$.
+            The mean value in this figure is 0.363 K, the maximum is 1.389 K and the minimum is 0.065 K.
+            The warming occurs mainly in the arctics and within Central Asia and North America as well as the Sahara region.
+            There is almost no warming in the tropics and the non-arctic southern hemisphere.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_A-lo>
+#figure(
+  image("img/Delta T_V locked.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A1-V0-C1` and `X1-A1-V0-C1` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta accent(T, ~)_V$.
+            The mean value in this figure is 2.191 K, the maximum is 3.77 K and the minimum is 1.715 K.
+            The strongest warming occurs in the Himalayas, the Sahara region and the American Cordilleras as well as Australia.
+            The weakest warming happens over the equatorial oceans.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_V-lo>
+#figure(
+  image("img/Delta T_C locked.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A1-V1-C0` and `X1-A1-V1-C0` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta accent(T, ~)_F$.
+            The mean value in this figure is 0.334 K, the maximum is 1.107 K and the minimum is 0.065 K.
+            One can clearly see that most of the warming happens in the arctics and over Central Asia as well as the Sahara.
+            Furthermore, more warming occurs over land than over the oceans.
+            It is worth noting that there is no difference between this figure and @figure-T_F.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_C-lo>
+#figure(
+  image("img/Delta T_AC locked.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A0-V1-C0` and `X1-A0-V1-C0` is displayed.
+            Meaning it is a spatial distribution of $Delta accent(T, ~)_"AC"$.
+            The mean value in this figure is 0.363 K, the maximum is 1.389 K and the minimum is 0.065 K.
+            The warming occurs mainly in the arctics and within Central Asia and North America as well as the Sahara region.
+            There is almost no warming in the tropics and the non-arctic southern hemisphere.
+            It is worth noting that there is no difference between this figure and @figure-T_A-lo.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_AC-lo>
+#figure(
+  image("img/Delta T_AV locked.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A0-V0-C1` and `X1-A0-V0-C1` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta accent(T, ~)_"AV"$.
+            The mean value in this figure is 2.461 K, the maximum is 4.745 K and the minimum is 1.79 K.
+            The strongest warming occurs in the Himalayas, the Sahara region, the Arctic and the American Cordilleras as well as Australia and the Southern Ocean.
+            The weakest warming happens over the equatorial oceans.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_AV-lo>
+#figure(
+  image("img/Delta T_CV locked.png", width: 100%),
+  caption: [In this figure, the temperature difference between the runs `X2-A1-V0-C0` and `X1-A1-V0-C0` is displayed.
+            Meaning it is a spatial distribution of one of the eight values of $Delta accent(T, ~)_"CV"$.
+            The mean value in this figure is 2.191 K, the maximum is 3.77 K and the minimum is 1.715 K.
+            The strongest warming occurs in the Himalayas, the Sahara region and the American Cordilleras as well as Australia.
+            The weakest warming happens over the equatorial oceans.
+            It is worth noting that there is no difference between this figure and @figure-T_V-lo.
+            The data comes from the output binary files of the models and the outlines of the geography comes from @topo.]
+) <figure-T_CV-lo>
+
+The locked feedback factors $accent(lambda, ~)_i$ are calculated using equation @feedbacklo.
+The values of $lambda_T$ and $F$ are taken from the previous section.
+The values of $Delta accent(T, ~)_i$ are again averages taken from the respective parts of @feedback_locked in the appendix.
+
+
+#figure(
+  table(
+    columns: 7,
+    table.header(
+      [], [Albedo], [Cloud], [Water Vapor], [Albedo-Cloud], [Albedo-Vapor], [Cloud-Vapor]
+    ),
+    [$Delta accent(T, ~)_i$ [K]            ], [0.363], [0.334], [ 2.191], [0.363], [ 2.461], [ 2.191],
+    [$accent(lambda, ~)_i [W m^(-2)K^(-1)]$], [1.859], [0.754], [12.432], [1.859], [12.662], [12.432]
+  ),
+  caption: [
+    Values of temperature composition and feedback factors with locked feedback.
+    The water vapor feedback factors are very high compared to the other ones due to the anomalous values in the temperature feedback factor.
+    The values for "Albedo" and "Albedo-Cloud" are the same; the values for "Water Vapor" and "Cloud-Vapor" are the same.
+    The temperature values are taken from @feedback_locked, while the feedback factors are obtained using equation @feedbacklo.
+  ],
+) <locked_table>
+
+The feedback synergy is computed via equation @synergy.
+It has to be noted that the feedbacks used in that equation can also be a combination of two feedbacks.
+So e.g. $S(A, "CV") = accent(lambda, ~)_"ACV" - (accent(lambda, ~)_A + accent(lambda, ~)_"CV")$.
+@locked_table indicates that $Delta T_"ACV"$ was not measured and therefore $accent(lambda, ~)_"ACV"$ cannot be obtained via equation @synergy.
+For that reason we extract it from two values that come from previous sections:
+$ accent(lambda, ~)_"ACV" = sum_i lambda_i - lambda_T = 10.880 " " W m^(-2) K^(-1) $
+The other synergy values are displayed in @sixegg.
+#figure(
+    image("img/synergy.svg", width: 50%),
+    caption: [
+      Within the circles, the feedbacks with their factors are displayed.
+      The blue numbers on the outside are the values of the synergies.
+      The gray circles are the fundamental feedbacks: albedo (A), cloud (C) and water vapor (V).
+      The white circles are compositions according to the connections to the gray circles.
+      E.g. "AV" is connected by the lines to "A" and "V", meaning it is the state where albedo and water vapor are acting freely.
+      All of the synergy values are negative.
+      All values have [$W m^(-2) K^(-1)$]. Inspired by @Mauritsen2013.],
+) <sixegg>
+
+#pagebreak()
 The feedback synergy values in @sixegg reveal a clear shortcoming of the MSCM model.
 The cloud feedback seems to have no impact on feedback factors when acting alongside a different feedback.
-This indicates a very simplified or nonexistent cloud feedback mechanism within the code base.
+This indicates a very simplified or non-existent cloud feedback mechanism within the code base.
 Apart from that abnormality, the other values also seem to behave rather curiously compared to other studies and papers.
 All feedbacks seem to have a negative synergy with each other in every combination.
 Every feedback is stronger on its own.
-The fact that the synergy is not just zero implies that the feedbacks do interact with each other.
 The values of the synergy of vapor and albedo are also the same.
 This result stands in contradiction to results from more accurate models as seen in @Mauritsen2013.
 The reason for the inaccuracy concerning synergy most likely comes from the cloud model once again
 while also impacting the other values.
-Therefore the MSCM is not suitable for locking feedback as well as calculating synergies between feedbacks.
-Again this presents a shortcoming of the MSCM model and possible solutions will be discussed further in the next section.
+Therefore the MSCM is not suitable for locking feedbacks as well as calculating synergies between feedbacks.
 
 
-== Possible corrections for the model
-The first upgrade to the model that could be looked into is a better cloud model.
-The current cloud model is not a feedback mechanism and therefore inhibits deeper analysis of e.g. feedback synergy.
+= Discussion
+In this section the anomalies of the results will be analyzed further and the roots and implications will be looked into.
 
-The next correction that could be made is a modified lapse rate feedback part of the thermal model.
-This allows the partial temperature contribution of the temperature feedback to reach realistic values.
 
-These fixes may allow for the model to be suitable for a meaningful feedback separation if implemented correctly.
+== Lapse rate
+Since the MSCM is a one-layer atmosphere model, the effects of lapse rate cannot be simulated but only approximated.
+These approximations are done using other parts of the model as well as real world measurements,
+all influencing the air temperature.
+Details of this can be found within the subroutine `LWradiation`, where the atmospheric emissivity is calculated as well as the variable `LWair_down`.
+The latter depends on the emissivity, the air temperature and the constant `dTrad`,
+which is defined as $"dTrad" = -0.16 dot "Tclim" -5$, where `Tclim` is the real world surface temperature measured between 1948 and 2007.
+The air temperature itself depends on corrections made with the radiation models as well as the hydrological model.
+Since the sub-models of the MSCM are also simplified, the overall accuracy of the lapse rate model is rather low.
+As found in the results section, this leads to a lapse rate feedback that is negative all over the globe, even in the polar regions.
 
+If the lapse rate feedback factor was that negative in the real world and nothing else would change,
+many things would be different.
+First of all there would have to be some kind of new mixing of lower level air with the TOA in the arctics,
+to substantiate the negative lapse rate feedback.
+That would lead to lapse rate feedback damping and not amplifying arctic warming.
+Furthermore, the lower feedback factor would lead to a higher environmental lapse rate which,
+like today in the tropics, would massively promote cloud formation all over the world.
+There would be more high and low altitude clouds forming in many parts of the world,
+leading to a substantial cooling of the surface, not only because of the stronger lapse rate,
+but also because of more clouds reflecting more light.
+Because the definition of the tropopause is dependent on the lapse rate, it would also be higher all over the globe,
+leading to higher thunderstorms being possible that block even more light from hitting the ground.
+The transport of moist air from water vapor rich regions to others would also be reduced, due to the quicker formation of clouds.
+This leads to much more amplified weather patterns:
+- more droughts in regions where there is low humidity/water coverage
+- more rain in regions with high humidity/over the ocean
+- more extreme weather events like hurricanes due to the speedup in formation
+Despite the extremes being more severe, the climate sensitivity will go down, meaning a more stable climate will be established.
 
 
 #pagebreak()
+== Albedo
+As seen in @arctic_temp, the MSCM drastically underestimates the impact of the albedo feedback.
+The model sets the albedo for all ice and clouds to 0.35 and the rest to 0.1.
+Furthermore, the temperature range of the different albedo types is set as
+-10 to 0 °C for land snow-albedo and -7 to -1.7 °C for ocean ice-albedo.
+The albedo of the points is then altered in every time step of the model as follows:
+- below the minimum temperature the albedo is set  to 0.35
+- above the maximum temperature the albedo is set to 0.1
+- within the temperature range, the albedo grows linearly with the surface temperature from 0.1 to 0.35
+The model also uses a real world glacier map as an initial state, to account for land ice.
+The model then modifies the shortwave radiation flux with the planetary albedo $a_"planet" = a_"surface" + a_"atmos" - a_"surface" dot a_"atmos"$.
+The main problem with this approach is that the albedo of ice lies more within the range of 0.5 to 0.7 and snow as high as 0.9 @NASA.
+This points to a underestimation within the MSCM of the albedo, leading to a way smaller change in surface albedo if the ice melts.
+
+If the albedo would suddenly behave like the model does in the real world, a few drastic changes will happen.
+The clouds having their albedo decreased from approximately 0.7 to 0.35 @Albedo
+would lead to much more shortwave radiation reaching the ground or being absorbed within the atmosphere.
+This alone would lead to a warming effect.
+Regions with sand would also have their albedo decreased from 0.35 to 0.1 and would subsequently also warm up @Albedo.
+Especially the ice and snow covered regions would warm up significantly due to the change of albedo from around 0.7 to 0.35 @NASA.
+
+Oceans would not have a relevant change in albedo.
+Dense forests have a lower albedo than 0.1, so they would subsequently cool down slightly.
+The albedo feedback factor would be smaller after the sudden change because every change in albedo after would be way smaller than today.
+So in conclusion, the planet would warm drastically first but then would be more stable, since the feedback factor would be rather small.
+
+
+== Clouds
+The last and biggest discrepancy within the MSCM is the cloud model as seen in @figure-T_C.
+The clouds themselves are initially read from a database containing a real world measured spatial and temporal distribution of clouds.
+If the $"CO"_2$ is set to 680 ppm, the cloud cover becomes constant all over the world at 70% coverage.
+Other than that, the cloud value is not altered at all, meaning that there is no feedback loop within the cloud model.
+Only the albedo and the emissivity of the clouds is used within the model, leading to a strongly simplified cloud model that is almost useless when considering feedbacks.
+This model leads to an inaccurate impact of clouds, especially in regions where there are typically none, like in the Sahara.
+
+The scenario that would happen if the clouds would be homogeneously distributed at 0.7 coverage
+whenever there is 680 ppm $"CO"_2$ in the atmosphere has some interesting implications.
+First there would be much more clouds which already cool the planet massively within the MSCM,
+but the real world impact would be even stronger since the albedo of clouds is upwards of 0.6 instead of 0.35 @Albedo.
+Especially regions with few clouds in the current climate are impacted the strongest.
+For clouds to be that well distributed, all important factors for cloud formation need to be present all over the globe.
+That implies either a very high humidity everywhere or a very fast transport of moisture within the atmosphere.
+This could be made possible by broader and more frequent atmospheric rivers as well as low level jets,
+which transport the majority of moisture within the atmosphere @AR.
+
+#pagebreak()
+There will be much more precipitation in most parts of the world because of the presence of the factors to form clouds in the first place.
+There also is not variation over the year within cloud cover, meaning climate phenomena like monsoon are not possible within this scenario.
+Assuming that the kinds of clouds also don't vary from one another, it stands to reason that the lapse rate must be equally as strong in most places of the world.
+As this is a global mean, the tropics would have fewer clouds than today, leading to less extreme weather phenomena like hurricanes.
+The lower lapse rate in the tropics leads to a stronger warming effect of that feedback, while in the arctics the opposite happens.
+All in all the globe would cool off significantly in such a scenario, while the feedbacks effects are rather dampened than amplified.
+This leads to a more homogeneous warming of the globe and a weakening of the arctic amplification.
+
+
+== Possible corrections for the model
+As said in the last sections, there are a few improvements that could be made to the model to yield a more realistic simulation.
+
+=== Lapse rate model <correction-lapse>
+Separation of the lapse rate from the planck feedback would be a good starting point.
+This allows a better feedback separation to be performed without the need of approximations.
+Furthermore, the lapse rate model needs to be more realistic to give positive values in the arctics and more realistic values in the rest of the world.
+To achieve this, the atmosphere needs to be more complex than one layer. The implementation of a more complex atmosphere model,
+e.g. a multi layer gray radiation atmosphere model would benefit the accuracy of the lapse rate feedback model.
+This atmosphere model is still considered to be elementary and can be implemented rather simply as shown in the `climlab` climate model @climlab.
+Implementing a more realistic lapse rate model is possible when using a multi layer atmosphere, leading to, // KING 🫴 👑
+with the right tuning, a comparable feedback factor for lapse rate.
+A simple lapse rate model could be something like presented in @matlab.
+
+=== Albedo model
+The albedo model would be another part of the model that could be upgraded.
+A correct albedo model would allow the model to more accurately predict the warming in the polar regions, i.e. arctic amplification.
+This could be achieved by implementing the correct value for snow and ice covered regions as well as clouds.
+Moreover, an real-world map for the spatial distribution of the albedo could be used to improve the albedo model.
+E.g. the Sahara would mostly have an albedo of approximately 0.35, the rain forest between 0.07 and 0.15 etc.
+Several different real world maps like this are already used within the MSCM like:
+- zonal and meridional winds
+- atmospheric humidity and soil moisture
+- cloud cover
+- topography and solar radiation
+Because the model already uses these external resources it would be rather simple to implement the more accurate albedo map.
+It is important though to still change the albedo values if needed, so that the albedo still stays a feedback and is not predetermined all the time as e.g. the cloud model.
+
+=== Cloud model
+The cloud model also needs some upgrades. First of all there is a need to make the cloud an actual feedback mechanism.
+To do that, a model for cloud formation needs to be implemented.
+A simple cloud formation model based on humidity and lapse rate would be enough to achieve that, leading to interactions with two other feedback mechanisms.
+After implementing a simple cloud formation model, more characteristics than albedo and
+long wave emissivity need to be implemented to better account for the many properties of clouds.
+Important cloud properties are e.g. the altitude as well as the composition of the clouds.
+Higher clouds generally have a lower emissivity, leading to a stronger greenhouse effect @IPCC_AR6.
+With the multi layer atmosphere proposed in @correction-lapse, the altitude could be simulated.
+The composition shifts towards more water droplets in warmer climate @IPCC_AR6,
+meaning a temperature dependency could be enough for that part of the cloud model.
+Water droplets within clouds also have a higher albedo, leading to a cooling effect.
+The clouds in the MSCM also do not interact with the hydrological model directly.
+Instead, a real-world map is again used to determine the influence of rain on the hydrological cycle.
+Since this interaction is important for the interactions between feedbacks,
+a model that can approximate precipitation with a given cloud distribution is required.
+
+
 = Conclusion
 The MSCM model is capable of simulating the climate rather accurately considering the sheer simplicity of the model.
 Especially the global mean climate sensitivity and the corresponding total global feedback factor
 match the values presented in papers that analyzed bigger models like @Dufresne2008 and @Mauritsen2013.
 But the simplicity limits the depth of the correctness and the values deviate strongly the more they are analyzed.
-The lapse rate feedback factor is way too strong in amplitude when compared to other models.
-This leads to a unrealistic distribution and amplification of the different feedback factors.
-Moreover, the feedback synergies all being negative indicates an overarching restriction of the model.
-Finally, the cloud model that emulates a feedback clearly shows the cuts that were done when the model was created.
 
-But the MSCM still fulfilled the intended role, being able to simulate core concepts of climate change
-with very little computational power required and the whole model being simple enough
-so that every change can be physically explained.
-It is very likely that the feedback separation was not meaningful.
-Therefore a further investigation into the topic using the MSCM should be done
-to rule out any errors in following the correct methodology.
-If there was no error, the MSCM is not suitable to perform a feedback separation on.
-Corrections to the model to increase the accuracy of all values and principles investigated in this thesis,
-while still maintaining the overall accuracy of the model, could be further researched in another thesis.
+The limitations of the lapse rate model, the albedo model and especially the cloud model of the MSCM
+are the main takeaways of the feedback separation.
+The clouds not being a feedback was the main cause of the synergy not being able to be calculated correctly.
+
+In order to get more realistic values out of the MSCM, these sub-models have to be upgraded.
+More layers within the atmosphere, a more accurate albedo as well as making clouds a feedback are the most pressing ones of those.
+Such upgrades to the model could be investigated in another study to refine the MSCM,
+while trying to still minimize the computing power needed for the model.
+
+There are a few concerns with the results of this thesis. The existence of a non-negligible $Delta (Delta T)$ implies
+that the feedback separation was unsuccessful. To remedy this, a redo of the experiments with enhancements is recommended.
+First, the lapse rate and Planck feedback should be separated, then also other possible feedbacks should be separated out,
+e.g. ocean feedback. That way it should be possible for the $Delta (Delta T)$ to become negligible and for a feedback separation to be successfully performed.
+
+Furthermore it might be easier to implement other methods of feedback separation into the MSCM
+e.g. the radiative kernel method of @Soden2008 in combination with the SST method.
+Doing that would result in a different feedback separation that could be compared to the values found within this thesis.
+However, the radiative kernel method can't be used to compute cloud feedbacks directly, while the SST method instead specialises in exactly that.
 
 
 
@@ -633,8 +1031,7 @@ while still maintaining the overall accuracy of the model, could be further rese
     The different $Delta T_i$ refer to the changes in temperature;
     the differences in the last three columns are calculated via
     $Delta T_i = "gmean"("Simulation1") - "gmean"("Simulation2")$,
-    where gmean is an internal function of the model.
-  ],
+    where gmean is an internal function of the model.],
 ) <feedback_runs>
 
 #figure(
@@ -656,11 +1053,10 @@ while still maintaining the overall accuracy of the model, could be further rese
     The different $Delta accent(T, ~)_i$ refer to the changes in temperature;
     the differences in the last three columns are calculated via
     $Delta accent(T, ~)_i = "gmean"("Simulation1") - "gmean"("Simulation2")$,
-    where gmean is an internal function of the model.
-  ]
+    where gmean is an internal function of the model.]
 ) <feedback_locked>
 
 
 
 #pagebreak()
-#bibliography("sources.bib", style: "ieee")
+#bibliography("sources.bib", style: "apa")
