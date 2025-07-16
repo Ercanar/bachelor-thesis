@@ -1,10 +1,22 @@
 {
   outputs = { flake-utils, nixpkgs, ... }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; }; in rec {
+      let
+        pkgs = import nixpkgs { inherit system; };
+        inherit (pkgs.lib.fileset) toSource unions;
+      in
+      rec {
         packages.default = pkgs.stdenv.mkDerivation {
           name = "pdf";
-          src = ./.;
+
+          src = toSource {
+            root = ./.;
+            fileset = unions [
+              ./Thesis.typ
+              ./img
+              ./sources.bib
+            ];
+          };
 
           nativeBuildInputs = with pkgs; [ typst ];
 
