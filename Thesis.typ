@@ -62,7 +62,11 @@
 #set heading(numbering: "1.1")
 
 // TODO SAßIFIZIEREN!!!
-
+// TODO keine einzelnen unterkapitel!!
+// TODO weniger informell!
+// TODO spatial, nicht spacial
+// TODO "The Arctic", nicht "the arctics"
+// TODO Hier und da ziemlich knapp und stichpunktartig geschrieben, und etwas mehr Genauigkeit wäre schön
 
 = Preface
 In this thesis, the Monash simple climate model will be examined.
@@ -74,6 +78,7 @@ Lastly, the shortcomings of the model will be analyzed and possible improvements
 
 
 = Introduction
+// TODO ausführlicher und mehr auf die ergebnisse zuschneiden
 == Climate system and climate sensitivity
 The Earth's climate system is an interconnected ensemble of the five subsystems: atmosphere, hydrosphere, cryosphere, lithosphere and biosphere.
 They all influence each other and their whole state is characterized as the climate system.
@@ -148,7 +153,6 @@ In this section, the relevant processes and equations used in @results will be e
 == Feedbacks
 Feedbacks are processes whose reactions to a given state influence the state itself,
 leading to an altered state and therefore an altered reaction to that new state.
-This can lead to self-amplifying processes which also happened in the past (e.g. Snowball Earth).
 
 === Feedback types and arctic amplification
 #figure(
@@ -221,6 +225,7 @@ In the MSCM, the Planck feedback and the lapse rate feedback are not separated,
 instead being compounded: $lambda_"temperature" = lambda_"Planck" + lambda_"lapse rate"$.
 
 === Imposed feedbacks
+// TODO besser erklären: "Die PRP Methode erfordert eigentlich den Strahlungstransfer-Modellcode, um dann die Feedbacks im gekoppelten Lauf zu diagnostizieren. Im Fall des Monash model mit nur einer atm. layer ist das sehr simpel, aber das wird in Kap. 3 nicht recht klar. Da soll es ja um die Theorie gehen."
 There are two control runs done, CTRL/1x$"CO"_2$ (340 ppm $"CO"_2$) and 2x$"CO"_2$ (680 ppm $"CO"_2$), from which feedback values can be taken and inserted into new runs.
 If the values of the feedbacks are now inserted into a run, the feedbacks do not act freely but predetermined.
 These feedbacks are then called "imposed".
@@ -244,6 +249,7 @@ Lastly, one needs the total surface temperature change with all feedbacks active
 This method, also called partial radiative perturbation (PRP), can give the partial temperature contributions of all four feedbacks as well as their feedback factors.
 
 === Locked feedbacks
+// TODO besser erklären, mehr kontext
 In a run where a feedback is "locked", it is imposed from the CTRL run, while the other feedbacks are free to act.
 This differs from the imposed feedback section, since there _all_ feedbacks were imposed and not free to act.
 
@@ -269,6 +275,7 @@ the temperature feedback as well as any other feedback that is active and not se
 === Other methods for feedback separation
 There are other methods to approximate the contributions of the different feedbacks that were not used here.
 
+// TODO "Was bedeutet das konkret für einen Unterschied im Gegensatz zu PRP im Monash model? Warum wäre das besser?"
 One possibility was presented in @Soden2008.
 A method based on radiative kernels was implemented there to circumvent the problem of correlation that plagues other methods.
 The correlation describes the impact of feedbacks on one another, making it hard to distinguish the effects of single feedbacks.
@@ -291,6 +298,7 @@ Therefore, the open source code from @mscm-code was used and modified to compute
 
 
 == Problems with the model
+// TODO begrenzen auf sachen die actually relevant sind
 This section dives deeper into the problem the code base presented when modifying the model to make the experiments possible.
 The code of the MSCM model is written in a very loose style and standard.
 It is written in Fortran (specifically the Fortran 90 dialect), which is a programming language that provides
@@ -315,6 +323,7 @@ This section contains all variables that define the state of the model at any gi
 After introducing a separate control program written in C, it was made possible to save the state of a running model,
 as well as loading that state as the initial state of a new run.
 
+// TODO nein, repo public machen und linken
 The code of this thesis is stored in a private GitHub repository due to licensing concerns.
 If you would like access to the code, send me an email at
 #link("mailto:hanneswendt22@gmail.com") containing your GitHub account name.
@@ -340,6 +349,7 @@ This achieves a steady state from which the feedback separation can be properly 
 The final state of the spin-up run is then saved and used as a starting point for all further runs.
 
 === Feedback separation and arctic amplification
+// TODO ausführlicher erklären, muss für unerfahrenen reproduzierbar
 The runs that will be analyzed are launched from the same initial state.
 They include every possible combination of 1x$"CO"_2$ with feedbacks either locked, imposed or free;
 the same also applies for 2x$"CO"_2$.
@@ -348,11 +358,16 @@ For example `X1-A0-V1-C2` refers to the run where $"CO"_2$ is pre-industrial (`X
 albedo feedback is enabled and free (`A0`), water vapor feedback is imposed or locked to CTRL (`V1`)
 and cloud feedback is imposed or locked to 2x$"CO"_2$ (`C2`).
 For more information on which runs were done, use @feedback_runs in the appendix.
+// TODO neue tabellen mit allen runs und welche konfiguration gemacht wurde
+=== Locked feedbacks
+// TODO gleiches wie vorherige section, nur mit locked
 
 
 
 #pagebreak()
 = Results <results>
+// TODO mehr die bilder in den text einbinden
+// TODO bilder, die nicht explizit im text diskutiert werden kommen in den appendix
 The results were obtained using Python scripts to analyze the output of the model.
 #figure(
   image("img/some-runs.svg", width: 97%),
@@ -665,12 +680,16 @@ The polar region is much more unstable, reacting with a much stronger surface te
 than any other region, especially when compared to the much more stable equatorial region.
 
 === Discrepancy of temperature differences
+// TODO besser sagen warum es das gibt und das ich es nicht mehr herausfinden kann
+// TODO spezifizieren, dass in PRP / imposed ist
 Within the last two sections a discrepancy between $Delta T$ and $sum_i Delta T_i$ can be found.
 This discrepancy, denoted $Delta (Delta T)$, assumes different values for the different regions.
 The global mean presents $Delta (Delta T) = 0.311$ $K$, while the arctics and the tropics give 0.159 K and 0.507 K respectively.
 That indicates that the effect on the sum is a process that warms the global climate, and does so stronger in the tropics and weaker in the arctics.
 This process could be another feedback that wasn't separated out or a possible correction within the model that was somehow not considered in the separation process.
 
+// TODO erklären warum das alles so ist, warum mauritsen das impliziert
+// "Hat es damit zu tun, dass man bei feedback locking Variablen dekorreliert (z.B. Albedo und Temperatur) und damit ein anderes Kontrollklima erzeugt?"
 @Mauritsen2013 implies that if $Delta (Delta T)$ gets substantially big, a meaningful feedback separation has not been achieved.
 This leads to the natural conclusion that either the MSCM is incapable of having a meaningful feedback separation performed on it
 or that some kind of error was done following the methodology of @Mauritsen2013 to try to do the feedback separation on the MSCM.
