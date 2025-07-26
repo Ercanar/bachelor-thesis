@@ -50,6 +50,7 @@
 
             gfortran
 
+            pdfminer
             (hunspell.withDicts (x: with x; [
               en_US
               de_DE
